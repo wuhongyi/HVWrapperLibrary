@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 一 5月 17 15:21:12 2021 (+0800)
-// Last-Updated: 二 5月 18 11:11:43 2021 (+0800)
+// Last-Updated: 四 6月 17 17:21:56 2021 (+0800)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 43
+//     Update #: 53
 // URL: http://wuhongyi.cn 
 
 // g++ -DUNIX -DLINUX HV.cc -lcaenhvwrapper -o 123
@@ -20,8 +20,43 @@
 #include <iostream>
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// InitSystem             ok
+// DeinitSystem           ok
+// ExecComm 
+// GetBdParam 
+// GetBdParamInfo 
+// GetBdParamProp
+// GetChName              ok
+// GetChParam             ok
+// GetChParamInfo
+// GetChParamProp
+// GetCrateMap            ok
+// GetExecCommList
+// GetSysProp
+// GetSysPropInfo
+// GetSysPropList
+// SetBdParam
+// SetChName              ok
+// SetChParam             ok
+// SetSysProp
+// TestBdPresence
+// SubscribeBoardParams
+// SubscribeChannelParams
+// SubscribeSystemParams
+// UnSubscribeBoardParams
+// UnSubscribeChannelParams
+// UnSubscribeSystemParams
+// Event Data Items
+// FreeEventData
+// GetEventData 
+
+
 int main(int argc, char *argv[])
 {
+  // 对单通道的设置
+  // int err = CAENHV_SetChParam(handle, slot, "V0Set", 1, &channel, &val);
+
+  
   char *SoftRel;
   SoftRel = CAENHVLibSwRel();
   printf("\nCAEN HV Wrapper Library Release: %s", SoftRel);
@@ -74,12 +109,7 @@ int main(int argc, char *argv[])
 	
   unsigned short Slot, NrOfCh_, listaCh[2048];
   char ChName[20];
-  char  (*listNameCh)[MAX_CH_NAME];
-  // char ** listNameCh = (char *) malloc (sizeof(char)* 4);
-  // for(int i = 0 ; i< 4 ; i ++)
-  //   {
-  //     listNameCh[i] = (char *) malloc(sizeof(char)* MAX_CH_NAME);
-  //   }
+  char listNameCh[4][MAX_CH_NAME];
 	
   Slot = 0;
   NrOfCh_ = 4;
@@ -87,9 +117,7 @@ int main(int argc, char *argv[])
     {	
       listaCh[n] = n;
     }
-  listNameCh = (char*)malloc(NrOfCh_*MAX_CH_NAME);
 
-	
 	
   ret = CAENHV_GetChName(sysHndl, Slot, NrOfCh_, listaCh, listNameCh);
   if( ret != CAENHV_OK )
@@ -123,7 +151,67 @@ int main(int argc, char *argv[])
 
   std::cout<<"=========="<<std::endl;
 
-	
+  // Set/GetChParam
+  // V0Set    Float
+  // I0Set    Float
+  // V1Set    Float
+  // I1Set    Float
+  // Rup      Float
+  // RDWn     Float
+  // Trip     Float
+  // SVMax    Float
+  // Vmon     Float
+  // Imon     Float
+  // Status   Unsigned (Bitfield)
+  // Pw       Unsigned (Boolean)
+  // Pon      Unsigned (Boolean)
+  // PDwn     Unsigned (Boolean)
+  // TripInt  Unsigned
+  // TripExt  Unsigned
+
+  char sw[30];
+  ret = CAENHV_GetSysProp(sysHndl, "SwRelease", sw);
+  std::cout<<sw<<std::endl;
+
+  unsigned int vali[4];
+  float valf[4];
+  
+  for(int  n = 0; n < NrOfCh_; n++ )
+    {	
+      listaCh[n] = n;
+    }
+
+  ret = CAENHV_GetChParam(sysHndl, Slot, "Status", NrOfCh_, listaCh, vali);
+  for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Status: "<<vali[n]<<std::endl;
+  ret = CAENHV_GetChParam(sysHndl, Slot, "Pw", NrOfCh_, listaCh, vali);
+  for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Power: "<<vali[n]<<std::endl;
+  ret = CAENHV_GetChParam(sysHndl, Slot, "VMon", NrOfCh_, listaCh, valf);
+  for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Voltage: "<<valf[n]<<std::endl;
+  ret = CAENHV_GetChParam(sysHndl, Slot, "V0Set", NrOfCh_, listaCh, valf);
+  for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Voltage Set: "<<valf[n]<<std::endl;
+
+  
+  
+  
+  
+  vali[0] = 0;
+  vali[1] = 0;
+  vali[2] = 0;
+  vali[3] = 1;
+  ret = CAENHV_SetChParam(sysHndl, Slot, "Pw", NrOfCh_, listaCh, vali);
+
+  valf[0] = 100;
+  valf[1] = 500;
+  valf[2] = 750;
+  valf[3] = 1000;
+  ret = CAENHV_SetChParam(sysHndl, Slot, "V0Set", NrOfCh_, listaCh, valf);
+
+
+
+
+
+  
+  std::cout<<"=========="<<std::endl;	
 
   ret = CAENHV_DeinitSystem(sysHndl);
   if( ret == CAENHV_OK )
