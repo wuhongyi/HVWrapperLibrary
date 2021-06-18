@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 一 5月 17 15:21:12 2021 (+0800)
-// Last-Updated: 四 6月 17 17:21:56 2021 (+0800)
+// Last-Updated: 五 6月 18 19:47:09 2021 (+0800)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 53
+//     Update #: 66
 // URL: http://wuhongyi.cn 
 
 // g++ -DUNIX -DLINUX HV.cc -lcaenhvwrapper -o 123
@@ -73,11 +73,11 @@ int main(int argc, char *argv[])
   strcpy(userName, "admin");
   strcpy(passwd, "admin");
 
-  strcpy(arg, "222.29.111.104");
+  strcpy(arg, "222.29.111.187");
 	
   ret = CAENHV_InitSystem((CAENHV_SYSTEM_TYPE_t)sysType, link, arg, userName, passwd, &sysHndl);
   printf("\nCAENHV_InitSystem: %s (num. %d)\n\n", CAENHV_GetError(sysHndl), ret);
-
+  std::cout<<"Handle: "<<sysHndl<<std::endl;
 
   unsigned short	NrOfSl, *SerNumList, *NrOfCh;
   char			*ModelList, *DescriptionList;
@@ -104,6 +104,9 @@ int main(int argc, char *argv[])
   CAENHV_Free(FmwRelMaxList);
   CAENHV_Free(NrOfCh);
 
+
+
+  
   std::cout<<"=========="<<std::endl;
 
 	
@@ -132,24 +135,23 @@ int main(int argc, char *argv[])
     }
 
 	
-  strcpy(ChName, "LaBr3_0");
-  ret = CAENHV_SetChName(sysHndl, Slot, NrOfCh_, listaCh, ChName);
-  printf("CAENHV_SetChName: %s (num. %d)\n\n", CAENHV_GetError(sysHndl), ret);
+  // strcpy(ChName, "LaBr3_0");
+  // ret = CAENHV_SetChName(sysHndl, Slot, NrOfCh_, listaCh, ChName);
+  // printf("CAENHV_SetChName: %s (num. %d)\n\n", CAENHV_GetError(sysHndl), ret);
 
 
-  ret = CAENHV_GetChName(sysHndl, Slot, NrOfCh_, listaCh, listNameCh);
-  if( ret != CAENHV_OK )
-    {
-      printf("CAENHV_GetChName: %s (num. %d)\n\n", CAENHV_GetError(sysHndl), ret);
-    }
-  else
-    {
-      printf("CHANNEL NAME\n");    
-      for(int n = 0; n < NrOfCh_; n++ )
-	printf("Channel n. %d: %s\n", listaCh[n], listNameCh[n]);
-    }
+  // ret = CAENHV_GetChName(sysHndl, Slot, NrOfCh_, listaCh, listNameCh);
+  // if( ret != CAENHV_OK )
+  //   {
+  //     printf("CAENHV_GetChName: %s (num. %d)\n\n", CAENHV_GetError(sysHndl), ret);
+  //   }
+  // else
+  //   {
+  //     printf("CHANNEL NAME\n");    
+  //     for(int n = 0; n < NrOfCh_; n++ )
+  // 	printf("Channel n. %d: %s\n", listaCh[n], listNameCh[n]);
+  //   }
 
-  std::cout<<"=========="<<std::endl;
 
   // Set/GetChParam
   // V0Set    Float
@@ -171,7 +173,7 @@ int main(int argc, char *argv[])
 
   char sw[30];
   ret = CAENHV_GetSysProp(sysHndl, "SwRelease", sw);
-  std::cout<<sw<<std::endl;
+  std::cout<<"SwRelease: "<<sw<<std::endl;
 
   unsigned int vali[4];
   float valf[4];
@@ -185,26 +187,37 @@ int main(int argc, char *argv[])
   for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Status: "<<vali[n]<<std::endl;
   ret = CAENHV_GetChParam(sysHndl, Slot, "Pw", NrOfCh_, listaCh, vali);
   for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Power: "<<vali[n]<<std::endl;
-  ret = CAENHV_GetChParam(sysHndl, Slot, "VMon", NrOfCh_, listaCh, valf);
-  for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Voltage: "<<valf[n]<<std::endl;
+
   ret = CAENHV_GetChParam(sysHndl, Slot, "V0Set", NrOfCh_, listaCh, valf);
   for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Voltage Set: "<<valf[n]<<std::endl;
+  ret = CAENHV_GetChParam(sysHndl, Slot, "I0Set", NrOfCh_, listaCh, valf);
+  for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Current Set: "<<valf[n]<<std::endl;
+
+  ret = CAENHV_GetChParam(sysHndl, Slot, "VMon", NrOfCh_, listaCh, valf);
+  for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Voltage: "<<valf[n]<<std::endl;
+  // ret = CAENHV_GetChParam(sysHndl, Slot, "IMon", NrOfCh_, listaCh, valf);
+  // for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Current: "<<valf[n]<<std::endl;  
+  
+  // ret = CAENHV_GetChParam(sysHndl, Slot, "Rup", NrOfCh_, listaCh, valf);
+  // for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  Rup: "<<valf[n]<<std::endl;
+  // ret = CAENHV_GetChParam(sysHndl, Slot, "RDWn", NrOfCh_, listaCh, valf);
+  // for(int  n = 0; n < NrOfCh_; n++ ) std::cout<<"ch: "<<n<<"  RDWn: "<<valf[n]<<std::endl;
 
   
   
-  
-  
-  vali[0] = 0;
-  vali[1] = 0;
-  vali[2] = 0;
-  vali[3] = 1;
-  ret = CAENHV_SetChParam(sysHndl, Slot, "Pw", NrOfCh_, listaCh, vali);
+  // vali[0] = 0;
+  // vali[1] = 0;
+  // vali[2] = 0;
+  // vali[3] = 0;
+  // ret = CAENHV_SetChParam(sysHndl, Slot, "Pw", NrOfCh_, listaCh, vali);
 
-  valf[0] = 100;
-  valf[1] = 500;
-  valf[2] = 750;
-  valf[3] = 1000;
-  ret = CAENHV_SetChParam(sysHndl, Slot, "V0Set", NrOfCh_, listaCh, valf);
+
+  
+  // valf[0] = 100;
+  // valf[1] = 500;
+  // valf[2] = 750;
+  // valf[3] = 1000;
+  // ret = CAENHV_SetChParam(sysHndl, Slot, "V0Set", NrOfCh_, listaCh, valf);
 
 
 
