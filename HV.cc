@@ -4,13 +4,13 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 一 5月 17 15:21:12 2021 (+0800)
-// Last-Updated: 五 6月 18 19:47:09 2021 (+0800)
+// Last-Updated: 一 9月 13 21:48:26 2021 (+0800)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 66
+//     Update #: 68
 // URL: http://wuhongyi.cn 
 
 // g++ -DUNIX -DLINUX HV.cc -lcaenhvwrapper -o 123
-
+// g++ -DUNIX -DLINUX -C HV.cc /lib64/libcaenhvwrapper.so -o 123
 #include "CAENHVWrapper.h"
 #include <fcntl.h>
 #include <string.h>
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
   strcpy(userName, "admin");
   strcpy(passwd, "admin");
 
-  strcpy(arg, "222.29.111.187");
+  strcpy(arg, "222.29.111.253");
 	
   ret = CAENHV_InitSystem((CAENHV_SYSTEM_TYPE_t)sysType, link, arg, userName, passwd, &sysHndl);
   printf("\nCAENHV_InitSystem: %s (num. %d)\n\n", CAENHV_GetError(sysHndl), ret);
