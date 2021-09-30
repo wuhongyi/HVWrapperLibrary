@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 一 5月 17 15:21:12 2021 (+0800)
-// Last-Updated: 一 9月 13 21:48:26 2021 (+0800)
+// Last-Updated: 二 9月 14 13:42:32 2021 (+0800)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 68
+//     Update #: 71
 // URL: http://wuhongyi.cn 
 
 // g++ -DUNIX -DLINUX HV.cc -lcaenhvwrapper -o 123
@@ -50,6 +50,15 @@
 // FreeEventData
 // GetEventData 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+// Board Parameters
+// Power
+// Termination
+// HV Clock
+// 
+
+
 
 int main(int argc, char *argv[])
 {
@@ -70,10 +79,10 @@ int main(int argc, char *argv[])
 
   sysType= N1470;
   link = LINKTYPE_TCPIP;
-  strcpy(userName, "admin");
-  strcpy(passwd, "admin");
+  strcpy(userName, "admin");//meaning only for SYX527
+  strcpy(passwd, "admin");//meaning only for SYX527
 
-  strcpy(arg, "222.29.111.253");
+  strcpy(arg, "222.29.111.118");
 	
   ret = CAENHV_InitSystem((CAENHV_SYSTEM_TYPE_t)sysType, link, arg, userName, passwd, &sysHndl);
   printf("\nCAENHV_InitSystem: %s (num. %d)\n\n", CAENHV_GetError(sysHndl), ret);
@@ -106,16 +115,18 @@ int main(int argc, char *argv[])
 
 
 
+
   
   std::cout<<"=========="<<std::endl;
 
 	
-  unsigned short Slot, NrOfCh_, listaCh[2048];
+  unsigned short Slot, listSlot[32], NrOfCh_, listaCh[2048];
   char ChName[20];
   char listNameCh[4][MAX_CH_NAME];
 	
   Slot = 0;
   NrOfCh_ = 4;
+  listSlot[0] = 0;
   for(int  n = 0; n < NrOfCh_; n++ )
     {	
       listaCh[n] = n;
